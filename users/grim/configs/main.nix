@@ -8,17 +8,11 @@
     ./alacritty.nix
     ./picom.nix
     ./zsh.nix
+    ./git.nix
   ];
 
   programs = {
     command-not-found.enable = true;
-
-    git = {
-      enable = true;
-      userName = "Grimpper";
-      userEmail = "sergio.pastorperez@gmail.com";
-      extraConfig.init.defaultBranch = "master";
-    };
 
     gpg = {
       enable = true;
