@@ -51,6 +51,5 @@ in {
     tdesktop
     discord
     vlc
-    cmatrix
   ];
 }

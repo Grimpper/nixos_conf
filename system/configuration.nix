@@ -104,7 +104,6 @@
     man
     pciutils
     usbutils
-    cowsay
 
     #   wget
     #   firefox
@@ -141,10 +140,9 @@
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "21.11"; # Did you read the comment?
 
+  # Enable flake support
   nix = {
     package = pkgs.nixFlakes; # or versioned attributes like nixVersions.nix_2_8
-    extraOptions = ''
-      experimental-features = nix-command flakes
-    '';
+    extraOptions = "experimental-features = nix-command flakes";
   };
 }

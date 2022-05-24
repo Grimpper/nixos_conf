@@ -31,11 +31,13 @@
 
     startupPrograms = [
       "feh --bg-fill $HOME/wallpapers/ori.jpg"
-      "sxhkd"
 
       # Terminate already running polybar instances
       "killall -q polybar"
       "polybar -q -r top"
+
+      "pkill sxhkd"
+      "sxhkd -c /home/grim/.config/sxhkd/sxhkdrc"
     ];
   };
 }
