@@ -6,15 +6,17 @@
     ./alacritty.nix
     ./picom.nix
     ./zsh.nix
-    ./git.nix
     ./sxhkd.nix
   ];
 
   programs = {
     command-not-found.enable = true;
 
-    gpg = {
+    git = {
       enable = true;
+      userName = "Grimpper";
+      userEmail = "sergio.pastorperez@gmail.com";
+      extraConfig.init.defaultBranch = "master";
     };
 
     nushell.enable = true;
@@ -35,8 +37,5 @@
     };
   };
 
-  services.gpg-agent = {
-    enable = true;
-    pinentryFlavor = "qt";
-  };
+  xsession.enable = true;
 }

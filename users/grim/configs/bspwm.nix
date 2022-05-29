@@ -25,11 +25,20 @@
       pointer_action2 = "resize_side";
     };
 
-    rules = { "Emacs" = { state = "tiled"; }; };
+    rules = {
+      "Emacs" = { state = "tiled"; };
+    };
 
-    extraConfig = ''
-      systemctl --user start pulseaudio.service
-      systemctl --user restart polybar.service
-    '';
+    startupPrograms = [
+      "feh --bg-fill $HOME/wallpapers/ori.jpg"
+
+      # Terminate already running polybar instances
+      "killall -q polybar"
+      "polybar -q -r top"
+
+      "pkill sxhkd"
+      "sxhkd"
+      "xsetroot -cursor_name left_ptr"
+    ];
   };
 }

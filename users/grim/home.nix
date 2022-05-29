@@ -1,12 +1,12 @@
-{ pkgs, lib, config, ... }:
+{ pkgs, ... }:
 
 {
-  imports = [ ./configs/main.nix ./packages/main.nix ];
+  imports = [ ./packages/main.nix ./configs/main.nix ];
 
   nixpkgs.overlays = [ (import ./overlays/st-overlay.nix) ];
 
   home = {
-    stateVersion = "21.11";
+    stateVersion = "21.05";
 
     username = "grim";
     homeDirectory = "/home/grim";
@@ -16,14 +16,13 @@
       variant = "intl";
     };
 
-#    pointerCursor = {
-#      name = "Adwaita";
-#      package = pkgs.gnome.adwaita-icon-theme;
-#      size = 32;
-#    };
+    pointerCursor = {
+      x11.enable = true;
+      size = 32;
+      package = pkgs.nur.repos.ambroisie.vimix-cursors;
+      name = "Vimix-cursors";
+    };
   };
 
-  xsession.enable = true;
   programs.home-manager.enable = true;
-  systemd.user.startServices = true;
 }

@@ -18,7 +18,6 @@ in {
     any-nix-shell
     htop
     zip
-    unrar
     unzip
     tree
     feh
@@ -37,7 +36,6 @@ in {
     ccls
     nodejs
     gnupg
-    pinentry_qt
     git
     git-crypt
 
@@ -47,6 +45,7 @@ in {
     # DEFAULT
     sxhkd
     xcolor
+    xorg.xsetroot
     flameshot
     pavucontrol
     tdesktop

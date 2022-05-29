@@ -3,7 +3,7 @@
     enable = true;
     enableCompletion = true;
     enableAutosuggestions = true;
-    enableSyntaxHighlighting = true;
+    #enableSyntaxHighlighting = true;
 
     initExtraFirst = ''
       bindkey  "^[[H"   beginning-of-line

@@ -5,33 +5,67 @@
 { config, pkgs, ... }:
 
 {
-  imports = [ # Include the results of the hardware scan.
-    ./hardware-configuration.nix
-  ];
+  imports =
+    [ # Include the results of the hardware scan.
+      ./hardware-configuration.nix
+    ];
 
-  # Bootloader config
-  boot.loader = {
-    systemd-boot.enable = false;
-    efi = {
-      canTouchEfiVariables = true;
-      efiSysMountPoint = "/boot";
-    };
-    grub = {
-      devices = [ "nodev" ];
-      enable = true;
-      efiSupport = true;
-      version = 2;
-      useOSProber = true;
+  # Use the systemd-boot EFI boot loader.
+  boot = {
+   # blacklistedKernelModules = [ "nouveau" ];
+   # kernelParams = [ "nomodset" ];
+
+    loader = {
+        efi = {
+          canTouchEfiVariables = true;
+          efiSysMountPoint = "/boot";
+        };
+        grub = {
+          enable = true;
+          efiSupport = true;
+          useOSProber = true;
+          version = 2;
+          devices = [ "nodev" ];
+          configurationLimit = 5;
+        };
+
+        timeout = 10;
     };
   };
 
-  # NVIDIA drivers are unfree.
-  nixpkgs.config.allowUnfree = true;
+  nixpkgs.config = {
+    allowUnfree = true;
+    packageOverrides = pkgs: {
+      nur = import (builtins.fetchTarball "https://github.com/nix-community/NUR/archive/master.tar.gz") {
+        inherit pkgs;
+      };
+    };
+  };
 
-  services.xserver.videoDrivers = [ "nvidia" ];
   hardware.opengl.enable = true;
+  # hardware.nvidia.modesetting.enable = true;
 
-  # networking.hostName = "nixos"; # Define your hostname.
+  services.xserver = {
+    enable = true;
+    videoDrivers = [ "nvidia" ];
+    # videoDrivers = [ "nouveau" ];
+    layout = "us";
+    xkbVariant = "intl";
+    # xkbOptions = "eurosign:e";
+
+    displayManager = {
+      gdm = {
+        enable = true;
+        # wayland = true;
+        # nvidiaWayland = true;
+      };
+      defaultSession = "none+bspwm";
+    };
+    windowManager.bspwm.enable = true;
+  };
+
+
+  networking.hostName = "nixos"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
   # Set your time zone.
@@ -55,22 +89,6 @@
     keyMap = "us-acentos";
   };
 
-  # Enable the X11 windowing system.
-  services.xserver = {
-    enable = true;
-    layout = "us";
-    xkbVariant = "intl";
-
-    windowManager.bspwm.enable = true;
-    displayManager = { defaultSession = "none+bspwm"; };
-  };
-
-  services.emacs.enable = true;
-
-  # Configure keymap in X11
-  # services.xserver.layout = "us";
-  # services.xserver.xkbOptions = "eurosign:e";
-
   # Enable CUPS to print documents.
   # services.printing.enable = true;
 
@@ -78,48 +96,66 @@
   sound.enable = true;
   hardware.pulseaudio.enable = true;
 
-  # Enable bluetooth
-  hardware.bluetooth.enable = true;
-  services.blueman.enable = true;
-
   # Enable touchpad support (enabled default in most desktopManager).
   # services.xserver.libinput.enable = true;
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
-  users.users.grim = {
-    isNormalUser = true;
-    extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
+  users.users = {
+    grim = {
+      isNormalUser = true;
+      home = "/home/grim";
+      extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
+    };
+    test = {
+      isNormalUser = true;
+      home = "/home/test";
+      extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
+    };
   };
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
     vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
-    git
-    alacritty
-    pinentry-curses
-
-    # Terminal utils
+    neovim
+    wget
     file
-    man
-    pciutils
-    usbutils
-
-    #   wget
     firefox
+    nix-index
+
+    sxhkd
+    alacritty
   ];
 
-  fonts.fonts = with pkgs; [ nerdfonts ];
+  nix = {
+    package = pkgs.nixFlakes; # or versioned attributes like nixVersions.nix_2_8
+    extraOptions = ''
+      experimental-features = nix-command flakes
+      warn-dirty = false
+    '';
+  };
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
   # programs.mtr.enable = true;
-  # services.pcscd.enable = true;
   # programs.gnupg.agent = {
   #   enable = true;
-  #   pinentryFlavor = "curses";
   #   enableSSHSupport = true;
   # };
+
+  # programs.sway = {
+  #   enable = true;
+  #   wrapperFeatures.gtk = true; # so that gtk works properly
+  #   extraPackages = with pkgs; [
+  #     swaylock
+  #     swayidle
+  #     wl-clipboard
+  #     mako # notification daemon
+  #     alacritty # Alacritty is the default terminal in the config
+  #     dmenu # Dmenu is the default in the config but i recommend wofi since its wayland native
+  #   ];
+  # };
+
 
   # List services that you want to enable:
 
@@ -138,11 +174,6 @@
   # this value at the release version of the first install of this system.
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-  system.stateVersion = "22.05"; # Did you read the comment?
+  system.stateVersion = "21.11"; # Did you read the comment?
 
-  # Enable flake support
-  nix = {
-    package = pkgs.nixFlakes; # or versioned attributes like nixVersions.nix_2_8
-    extraOptions = "experimental-features = nix-command flakes";
-  };
 }
