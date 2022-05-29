@@ -23,6 +23,7 @@ in {
     tree
     feh
     ripgrep
+    ranger
 
     # DEVELOPMENT
     nixfmt

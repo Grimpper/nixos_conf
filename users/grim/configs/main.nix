@@ -7,6 +7,7 @@
     ./picom.nix
     ./zsh.nix
     ./git.nix
+    ./sxhkd.nix
   ];
 
   programs = {
@@ -38,6 +39,4 @@
     enable = true;
     pinentryFlavor = "qt";
   };
-
-  xsession.enable = true;
 }

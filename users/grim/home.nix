@@ -1,10 +1,7 @@
-{ pkgs, ... }:
+{ pkgs, lib, config, ... }:
 
 {
-  imports = [
-    ./packages/main.nix
-    ./configs/main.nix
-  ];
+  imports = [ ./configs/main.nix ./packages/main.nix ];
 
   nixpkgs.overlays = [ (import ./overlays/st-overlay.nix) ];
 
@@ -19,12 +16,14 @@
       variant = "intl";
     };
 
-    # pointerCursor = {
-    #   name = "Adwaita";
-    #   package = pkgs.gnome.adwaita-icon-theme;
-    #   size = 32;
-    # };
+#    pointerCursor = {
+#      name = "Adwaita";
+#      package = pkgs.gnome.adwaita-icon-theme;
+#      size = 32;
+#    };
   };
 
+  xsession.enable = true;
   programs.home-manager.enable = true;
+  systemd.user.startServices = true;
 }
