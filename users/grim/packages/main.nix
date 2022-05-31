@@ -49,6 +49,7 @@ in {
     flameshot
     pavucontrol
     tdesktop
+    element-desktop
     discord
     vlc
   ];

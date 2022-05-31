@@ -5,40 +5,40 @@
 { config, pkgs, ... }:
 
 {
-  imports =
-    [ # Include the results of the hardware scan.
-      ./hardware-configuration.nix
-    ];
+  imports = [ # Include the results of the hardware scan.
+    ./hardware-configuration.nix
+  ];
 
   # Use the systemd-boot EFI boot loader.
   boot = {
-   # blacklistedKernelModules = [ "nouveau" ];
-   # kernelParams = [ "nomodset" ];
+    # blacklistedKernelModules = [ "nouveau" ];
+    # kernelParams = [ "nomodset" ];
 
     loader = {
-        efi = {
-          canTouchEfiVariables = true;
-          efiSysMountPoint = "/boot";
-        };
-        grub = {
-          enable = true;
-          efiSupport = true;
-          useOSProber = true;
-          version = 2;
-          devices = [ "nodev" ];
-          configurationLimit = 5;
-        };
+      efi = {
+        canTouchEfiVariables = true;
+        efiSysMountPoint = "/boot";
+      };
+      grub = {
+        enable = true;
+        efiSupport = true;
+        useOSProber = true;
+        version = 2;
+        devices = [ "nodev" ];
+        configurationLimit = 5;
+      };
 
-        timeout = 10;
+      timeout = 10;
     };
   };
 
   nixpkgs.config = {
     allowUnfree = true;
     packageOverrides = pkgs: {
-      nur = import (builtins.fetchTarball "https://github.com/nix-community/NUR/archive/master.tar.gz") {
-        inherit pkgs;
-      };
+      nur = import (builtins.fetchTarball {
+        url = "https://github.com/nix-community/NUR/archive/master.tar.gz";
+        sha256 = "1apy68hhvd2b9y4pbqahh6vi15y5a4sv6kdnh3hmgc4j1dd4amhb";
+      }) { inherit pkgs; };
     };
   };
 
@@ -63,7 +63,6 @@
     };
     windowManager.bspwm.enable = true;
   };
-
 
   networking.hostName = "nixos"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
@@ -127,12 +126,20 @@
     alacritty
   ];
 
+  environment.variables.NIXPKGS_ALLOW_UNFREE = "1";
+
   nix = {
     package = pkgs.nixFlakes; # or versioned attributes like nixVersions.nix_2_8
     extraOptions = ''
       experimental-features = nix-command flakes
       warn-dirty = false
     '';
+  };
+
+  # Virtualisation / dockers
+  virtualisation.podman = {
+    enable = true;
+    dockerCompat = true;
   };
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -155,7 +162,6 @@
   #     dmenu # Dmenu is the default in the config but i recommend wofi since its wayland native
   #   ];
   # };
-
 
   # List services that you want to enable:
 
